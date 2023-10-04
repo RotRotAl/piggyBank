@@ -2,14 +2,16 @@
     <div class="backdrop">
         <div class="content">
                 <h1 >Login</h1>
-                <form >
+                <form action="/login" method="post">
                     <label>Email:</label>
-                    <input type="email">
+                    <input type="email" required>
                     <label>Password:</label>
-                    <input type="password">
+                    <input type="password" required>
                     <button>LOGIN</button>
-                    <a >signup</a>
+                 
                 </form>
+                <%currentUrl+="signup"%>
+                <a href=<%=currentUrl%>>signup</a>
                
             </div>
         </div>

@@ -2,6 +2,10 @@
 <body>
     <main>
         <%- include("./header.ejs") %>
-        <%- include("./login.ejs") %>
+        <%if(!locals.username){%>
+          <%- include("./login.ejs") %>
+        <%}else{%>
+          <p>hello <%=name%></p>
+        <%}%>
       </main>
 </body>

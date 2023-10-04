@@ -1,0 +1,22 @@
+<body>
+    <%- include("./header.ejs") %>
+    <div class="backdrop">
+        <div class="content bigger">
+                <h1 >signup</h1>
+                <form action="/signup" method="post">
+                    <label>Email:</label>
+                    <input name="email" type="email" required>
+                    <label>Password:</label>
+                    <input name="password" type="password" required>
+                    <label>username:</label>
+                    <input name="username" required>
+                    <label>income:</label>
+                    <input class="third" type="number" name="income" required>
+                    <label>mounthly Savings:</label>
+                    <input class="third" type="number" name="mounthlySavings">
+                    <button  type="submit">SIGNUP</button>
+                 
+                </form>
+            </div>
+        </div>
+</body>

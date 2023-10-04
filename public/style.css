@@ -33,22 +33,23 @@ header>h1{
     background-color: white;
     border-radius:25%;
     padding: 20px;
-    height: 20rem;
-    width: 25rem;
+    height: 25rem;
+    width: 30rem;
 }
 .content>form>button{
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1rem;
-    border-radius: 20%;
+   
     margin: 5px 5px;
     background-color: white;
-    display: inline;
+    width: 25em;
+    display: block;
 }
 .content>form>a{
     border-radius: 20%;
     margin: 0px 20px;
     background-color: white;
-    display: inline;
+    display: block;
 }
 form{
     max-width: 420px;
@@ -74,4 +75,31 @@ input{
     border: none;
     border-bottom:1px solid #ddd ;
     color: #555;
+}
+a { 
+    color: inherit;
+ } 
+ .content.bigger{
+    padding: 10px;
+    height: 30rem;
+    width: 40rem;
+}
+.content.bigger>*>input{
+    display: block;
+    margin: 1px;
+    padding: 5px 3px;
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom:1px solid #ddd ;
+    color: #555;
+}
+.content.bigger>*>label{
+    color: #aaa;
+    display: inline-block;
+    margin: 2px 0 2px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
 }
