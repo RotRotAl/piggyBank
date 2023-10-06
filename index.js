@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import * as data from './data.js';
 
+
 const date = new Date();
 const app = express();
 const port = 3000;
@@ -44,25 +45,54 @@ userSchema.pre('save', function(next) {
         });
     });
 });   
-userSchema.methods.comparePassword = function(candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, function(err, isMatch) {
-        if (err) return cb(err);
-        cb(null, isMatch);
-    });
+userSchema.methods.comparePassword = async function(candidatePassword) {
+    var res = await bcrypt.compare(candidatePassword, this.password);
+    return res;
 };
 const User=mongoose.model("User",userSchema);
 
 //financial details
 const  financialSchema= new mongoose.Schema({
+    user:{
+        type:userSchema,
+        required:true,
+        minlength: [4, 'Password must be at least 8 characters long'],
+    maxlength: [128, 'Password must be less than 128 characters long']
+    },
     income:{
       type: Number,
       required: true,
     },
-    mounthlySavings: Number,
     regularPayments: []
     
   });
   const Financial=mongoose.model("Financial",financialSchema);
+
+  
+  function  itemSchema(title,content,type){
+   this.title=title;
+   this.content=content;
+   this.type=type;
+  };
+ 
+
+  //regularpaymentes item
+  const  paymentsSchema= new mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    amount:{
+        type:Number,
+        required:true
+    },
+    type:{
+        type:String,
+        required:true
+    }
+  });
+  const Payment=mongoose.model("payment",paymentsSchema);
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -77,9 +107,16 @@ app.listen(port, () => {
 
 
 app.get("/",  (req, res) => {
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  res.render("./index.ejs",{currentUrl:fullUrl});
+    console.log(req.body);
+    if(req.body.username==undefined||req.body.username=='null'||req.body.username==''){
+        var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+        res.render("./index.ejs",{currentUrl:fullUrl});
+    }
+   else{
+    res.render("./index.ejs",{currentUrl:fullUrl,name:req.body.username});
+   }
 });
+
 
 app.get("/signup",  (req, res) => {
   
@@ -108,15 +145,24 @@ app.post("/signup",async(req,res)=>{
         errOcurred(err,res,req);
     }
 
-
     var financial=new Financial({
+        user:user,
         income:income,
-       mounthlySavings: mounthlySavings,
+       
       
         
       });
 
     try{
+        if(mounthlySavings!=null&&mounthlySavings!=undefined&&mounthlySavings!='')
+        {
+            var mounthlySavingsPayment= new Payment({
+                title:'mounthly savings',
+                amount:mounthlySavings,
+                type:'savings'
+            });
+            financial.regularPayments.push(mounthlySavingsPayment);
+        }
         await financial.save();
         console.log(userName+" was added succesfully");
     }
@@ -124,29 +170,51 @@ app.post("/signup",async(req,res)=>{
         
         errOcurred(err,res,req);
     }
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     res.render("./index.ejs",{currentUrl:fullUrl,name:userName});
 });
 app.post('/login',async(req,res)=>{
     var email=req.body.email;
     var password=req.body.password;
     var usr;
-    var isMatch;
-    await User.findOne({email:email},function(err, usr) {
-        if (err) errOcurred(err,res,req);;});
-
-    await usr.comparePassword(password,function(err, isMatch) {
-        if (err) errOcurred(err,res,req);;});
+    var isMatch=false;
+    usr=await User.findOne({email:{$eq:email}}).
+    catch((err)=>
+        {
+             errOcurred(err,res,req)
+             ;});
+            
+       
+        try{
+            isMatch= await usr.comparePassword(password);
+        }
+        catch(err){
+            
+                 errOcurred(err,res,req);
+            }
     if(!isMatch){
-        rrOcurred('there is a typo',res,req);
+        errOcurred('there is a typo',res,req);
     }
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-  res.render("./index.ejs",{currentUrl:fullUrl,name:usr.userName});
+    else{
+        var usrFincaial= await Financial.findOne({'user._id' : usr._id});
+        var items=[];
+        var usrRegularregularPayments= usrFincaial.regularPayments;
+        usrRegularregularPayments.forEach((payment)=>{
+            var temp=new itemSchema(payment.title,
+                "your paying for that :"+payment.amount+" a mounth",
+                payment.type.toString()
+            );
+            items.push(temp);
+        });
+        console.log(items);
+        res.render("./index.ejs",{name:usr.username,items:items});
+    }
+   
 });
 
 function errOcurred(err,res,req)
 {
     console.log(err);
-    User.deleteOne({uaserName:userName});
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    var fullUrl = req.protocol + '://' + req.get('host');
     res.render("./errorHandler.ejs",{currentUrl:fullUrl,err:err});
 }

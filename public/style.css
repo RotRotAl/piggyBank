@@ -5,6 +5,8 @@ body{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
+  
 }
 header{
     margin: 0px;
@@ -102,4 +104,30 @@ a {
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
+}
+.item>h1{
+    background-color: #955ff8;
+    margin: 20px;
+}
+.item.savings>h1{
+    background-color: #c5f85f;
+}
+.item>p{
+    font-size: 1.5rem;
+}
+div.item{
+    text-transform: uppercase;
+    color: #555;
+    background-color: white;
+    border: 2px solid #2c3e50;
+    border-radius:25%;
+    padding: 10px;
+    height: 20rem;
+    width: 25rem;
+}
+#itemContainer{
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

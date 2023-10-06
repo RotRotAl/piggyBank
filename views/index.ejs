@@ -2,10 +2,25 @@
 <body>
     <main>
         <%- include("./header.ejs") %>
-        <%if(!locals.username){%>
+        <%if(!locals.name){%>
           <%- include("./login.ejs") %>
         <%}else{%>
-          <p>hello <%=name%></p>
+          <p >hello <%=name%></p>
+          <%if(locals.items){%>
+            <div id="itemContainer">
+            <%for (var i = 0; i < items.length; i++) {%>
+              <div class="<%="item "+items[i].type%>" >
+                <h1>
+                  <%=items[i].title%>
+                </h1>
+                <p>
+                  <%=items[i].content%>
+                </p>
+                </div>
+          <%}%>
+          <%}%>
+        </div>
         <%}%>
       </main>
+      <script>history.pushState({}, null, '/');</script>
 </body>
