@@ -107,13 +107,13 @@ app.listen(port, () => {
 
 
 app.get("/",  (req, res) => {
-    console.log(req.body);
+   
     if(req.body.username==undefined||req.body.username=='null'||req.body.username==''){
         var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         res.render("./index.ejs",{currentUrl:fullUrl});
     }
    else{
-    res.render("./index.ejs",{currentUrl:fullUrl,name:req.body.username});
+    res.render("./index.ejs",{currentUrl:fullUrl});
    }
 });
 
@@ -170,8 +170,28 @@ app.post("/signup",async(req,res)=>{
         
         errOcurred(err,res,req);
     }
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    res.render("./index.ejs",{currentUrl:fullUrl,name:userName});
+    var items=[];
+        var payments=[]
+        var paymentsSum=0;
+        items.push(new itemSchema("Your income is:",
+        imcome,
+        "income"
+        ));
+        
+            paymentsSum+=mounthlySavings;
+            var temp=new itemSchema('mounthly savings',
+                "your paying for that :"+mounthlySavings+" a mounth",
+               "savings"
+            );
+            payments.push(temp);
+       
+       
+        items.push(new itemSchema("After regular payments",
+        usrFincaial.income-paymentsSum+" left",
+        "left"
+        ));
+        items=items.concat(payments);
+        res.render("./index.ejs",{name:userName,items:items,id:user._id});
 });
 app.post('/login',async(req,res)=>{
     var email=req.body.email;
@@ -198,20 +218,65 @@ app.post('/login',async(req,res)=>{
     else{
         var usrFincaial= await Financial.findOne({'user._id' : usr._id});
         var items=[];
+        var payments=[]
+        var paymentsSum=0;
+        items.push(new itemSchema("Your income is:",
+        usrFincaial.income,
+        "income"
+        ));
         var usrRegularregularPayments= usrFincaial.regularPayments;
         usrRegularregularPayments.forEach((payment)=>{
+            paymentsSum+=payment.amount;
             var temp=new itemSchema(payment.title,
                 "your paying for that :"+payment.amount+" a mounth",
                 payment.type.toString()
             );
-            items.push(temp);
+            payments.push(temp);
         });
-        console.log(items);
-        res.render("./index.ejs",{name:usr.username,items:items});
+       
+        items.push(new itemSchema("After regular payments",
+        usrFincaial.income-paymentsSum+" left",
+        "left"
+        ));
+        items=items.concat(payments);
+        res.render("./index.ejs",{name:usr.username,items:items,id:usr._id});
     }
    
 });
+app.post('/regularpayment/:USERID',async(req,res)=>{
+    var id=req.params.USERID;
+    var usrFincaial= await Financial.findOne({'user._id' :id});
+    usrFincaial.regularPayments.push(new Payment({
+        title:req.body.title,
+        type:req.body.type,
+        amount:req.body.amount
+    }));
+    usrFincaial.save();
 
+    var items=[];
+        var payments=[]
+        var paymentsSum=0;
+        items.push(new itemSchema("Your income is:",
+        usrFincaial.income,
+        "income"
+        ));
+        var usrRegularregularPayments= usrFincaial.regularPayments;
+        usrRegularregularPayments.forEach((payment)=>{
+            paymentsSum+=payment.amount;
+            var temp=new itemSchema(payment.title,
+                "your paying for that :"+payment.amount+" a mounth",
+                payment.type.toString()
+            );
+            payments.push(temp);
+        });
+       
+        items.push(new itemSchema("After regular payments",
+        usrFincaial.income-paymentsSum+" left",
+        "left"
+        ));
+        items=items.concat(payments);
+        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id});
+});
 function errOcurred(err,res,req)
 {
     console.log(err);

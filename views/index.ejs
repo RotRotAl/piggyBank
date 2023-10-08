@@ -1,13 +1,16 @@
 
 <body>
-    <main>
-        <%- include("./header.ejs") %>
+  <script>history.pushState({}, null, '/');</script>
+  <%- include("./header.ejs") %>
+  
+       
         <%if(!locals.name){%>
           <%- include("./login.ejs") %>
         <%}else{%>
           <p >hello <%=name%></p>
+          <main>
+          <div id="itemContainer">
           <%if(locals.items){%>
-            <div id="itemContainer">
             <%for (var i = 0; i < items.length; i++) {%>
               <div class="<%="item "+items[i].type%>" >
                 <h1>
@@ -19,7 +22,29 @@
                 </div>
           <%}%>
           <%}%>
+          
         </div>
+        <div class="item add-payment" >
+          <h1>
+            add regular payment
+          </h1>
+          
+         <form action="<%="/regularpayment/"+locals.id%>" method="post">
+          <label>title</label>
+          <input name="title" required/>
+          <labe>type</labe>
+          <select name="type" required>
+            <option value="savings">savings</option>
+            <option value="transpotation">transpotation</option>
+            <option value="contribution">contribution</option>
+            <option value="subscriptons">subscriptons</option>
+            <option value="other">other</option>
+          </select>
+          <label>amount of money:</label>
+          <input name="amount" type="number" required/>
+          <button  type="submit">+</button>
+        </form>
+          </div>
         <%}%>
       </main>
       <script>history.pushState({}, null, '/');</script>
