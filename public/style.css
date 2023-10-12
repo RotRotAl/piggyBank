@@ -1,69 +1,88 @@
-/* General Styles */
-html {
-    font-size: min(1.3vw, 1.2vh);
-  }
-  
-  body {
+html{
+    @if 1.3vw<1.2vh{
+        font-size: 1.3vw;
+    }
+    @else{
+        font-size: 1.3vh;
+    }
+   
+}
+body{
     font-family: 'Bebas Neue', sans-serif;
-    margin: 0;
+    margin: 0px;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-  }
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
   
-  /* Layout Styles */
-  main {
+  
+}
+main{
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+header{
+    margin: 0px;
+    padding: 0.5rem;
+    background-color: #e879b1bd;
+    display: block;
+    
+}
+header>h1{
+    
+    font-size: 2rem;
+}
+.content>form{
+    padding: 0px;
+    margin: 0px;
+}
+.backdrop{
+    width: 100%;
+    height: 100%;
+    top:0;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-  }
-  
-  header {
-    margin: 0;
-    padding: 0.5rem;
-    background-color: rgba(232, 121, 177, 0.741);
-    display: block;
-  }
-  
-  header > h1 {
-    font-size: 2rem;
-  }
-  
-  /* Form Styles */
-  .content > form {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .content > form > button {
-    margin: 0;
-    padding: 0;
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.backdrop>.content{
+    text-transform: uppercase;
+    color: #555;
+    background-color: white;
+    border-radius:25%;
+    padding: 20px;
+    height: 20rem;
+    width: 30rem;
+}
+.content>form>button{
+    margin: 0px;
+    padding: 0px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1rem;
+    
     margin-top: 25px;
     margin-bottom: 25px;
     background-color: white;
     width: 30rem;
     display: block;
-  }
-  
-  .content > form > a {
+}
+.content>form>a{
     border-radius: 20%;
+    
     background-color: white;
     display: block;
-  }
-  
-  form {
+}
+form{
     max-width: 420px;
-    margin: 10px;
+    margin: 10px ;
     text-align: left;
     padding: 40px;
     border-radius: 10px;
-  }
-  
-  label {
+}
+label{
     color: #aaa;
     display: inline-block;
     margin: 5px 0 15px;
@@ -71,37 +90,32 @@ html {
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
-  }
-  
-  input {
+}
+input{
     display: block;
     padding: 10px 6px;
     width: 30rem;
     box-sizing: border-box;
     border: none;
-    border-bottom: 1px solid #ddd;
+    border-bottom:1px solid #ddd ;
     color: #555;
-  }
-  
-  /* Links Styles */
-  a {
+}
+a { 
     color: inherit;
-  }
-  
-  /* Larger Content Styles */
-  .content.bigger {
+ } 
+ .content.bigger{
     padding: 10px;
     height: 30rem;
     width: 40rem;
-  }
+}
+.content.bigger>*>input{
   
-  .content.bigger > * > input {
     margin: 1px;
     padding: 5px 3px;
     width: 40rem;
-  }
-  
-  .content.bigger > * > label {
+    
+}
+.content.bigger>*>label{
     color: #aaa;
     display: inline-block;
     margin: 2px 0 2px;
@@ -109,71 +123,69 @@ html {
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
-  }
-  
-  .content.bigger > * > button {
+}
+.content.bigger>*>button{
     margin-top: 30px;
     width: 40rem;
-  }
-  
-  /* Item Styles */
-  .item > h1 {
-    background-color: rgba(149, 95, 248, 0.549);
+}
+.item>h1{
+    background-color: #955ff88c;
     font-size: 1.7rem;
     margin: 25px;
-  }
-  
-  .item.savings > h1 {
-    background-color: rgba(197, 248, 95, 0.549);
-  }
-  
-  .item.income > h1 {
-    background-color: rgba(248, 225, 95, 0.318);
-  }
-  
-  .item > p {
+}
+.item.savings>h1{
+    background-color: #c5f85f88;
+}
+.item.income>h1{
+    background-color: #f8e15f81;
+}
+.item>p{
     font-size: 1.5rem;
-  }
-  
-  div.item {
+}
+div.item{
     display: inline-block;
     text-transform: uppercase;
     color: #555;
     background-color: white;
     border: 2px solid #929292;
-    border-radius: 25%;
-    margin: 10px;
+    border-radius:25%;
+    margin: 10px 10px;
     padding: 10px;
     height: 14rem;
     width: 20rem;
-  }
-  
-  #itemContainer {
+}
+#itemContainer{
     display: inline-block;
-  }
-  
-  #itemContainer > * > * > input {
+    
+}
+#itemContainer>*>*>input{
     font-size: 1rem;
     width: 20rem;
-    padding: 0;
-  }
-  
-  /* Forms in Item Styles */
-  div.item.add-payment > form > * {
+    padding: 0px;
+}
+*>*>form{
+    margin:0px;
+    padding:0px;
+    width: 20rem;
+}
+div.item.add-payment>form>*{
+
     display: block;
-  }
-  
-  div.item.add-payment > h1 {
-    background-color: rgba(0, 217, 255, 0.623);
-    margin-bottom: 10px;
-  }
-  
-  div.item.add-payment {
+
+}
+div.item.add-payment>h1{
+
+    background-color: #00d9ff9f;
+}
+div.item.add-payment>h1{
+    margin-bottom:10px;
+}
+div.item.add-payment{
     min-height: 15rem;
     height: auto;
-  }
-  
-  div.item.add-payment > form > button {
+
+}
+div.item.add-payment>form>button{
     margin-top: 4px;
     position: relative;
     left: 5rem;
@@ -181,31 +193,25 @@ html {
     padding: 5px 3px;
     background-color: white;
     width: 10rem;
-  }
-  
-  div.item.add-payment > form > input {
+}
+div.item.add-payment>form>input{
     width: 20rem;
-  }
-  
-  /* Lists Styles */
-  ul {
+}
+ul{
     margin: 10px;
-    padding: 0;
-  }
-  
-  ul > * {
+    padding: 0px;
+}
+ul>*{
     border: 2px solid #929292;
     list-style-type: none;
     text-align: start;
-    margin: 0;
-  }
-  
-  li > form > input {
+    margin: 0px ;
+}
+li>form>input{
     width: 10rem;
-  }
-  
-  li > form > * {
-    margin: 5px 60px;
+ 
+}
+li>form>*{
+    margin:5px 60px;
     display: inline;
-  }
-  
+}
