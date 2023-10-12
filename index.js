@@ -24,7 +24,9 @@ const  userSchema= new mongoose.Schema({
   },
   password:{
     type: String,
-    required: true
+    required: true,
+    minlength: [4, 'Password must be at least 8 characters long'],
+    maxlength: [128, 'Password must be less than 128 characters long']
   }
 });
 userSchema.pre('save', function(next) {
@@ -56,8 +58,7 @@ const  financialSchema= new mongoose.Schema({
     user:{
         type:userSchema,
         required:true,
-        minlength: [4, 'Password must be at least 8 characters long'],
-    maxlength: [128, 'Password must be less than 128 characters long']
+       
     },
     income:{
       type: Number,
@@ -93,6 +94,34 @@ const  financialSchema= new mongoose.Schema({
   });
   const Payment=mongoose.model("payment",paymentsSchema);
 
+  //occasional payments
+  const  occasionalSchema= new mongoose.Schema({
+    title:{
+        type:String,
+        required:true
+    },
+    amount:{
+        type:Number,
+        required:true
+    },
+    date:{
+        type:Date,
+        required:true
+    }
+  });
+  const Occasional=mongoose.model("occasional",occasionalSchema);
+
+  //user occasional payments
+  const  useroccasionalSchema= new mongoose.Schema({
+    user:{
+        type:userSchema,
+        required:true,
+       
+    },
+    occasionalPayments: []
+    
+  });
+  const UserOccasional=mongoose.model("user-occasional",useroccasionalSchema);
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -152,7 +181,9 @@ app.post("/signup",async(req,res)=>{
       
         
       });
-
+      var userOccasional=new UserOccasional({
+        user:user,
+      });
     try{
         if(mounthlySavings!=null&&mounthlySavings!=undefined&&mounthlySavings!='')
         {
@@ -164,33 +195,14 @@ app.post("/signup",async(req,res)=>{
             financial.regularPayments.push(mounthlySavingsPayment);
         }
         await financial.save();
+        await userOccasional.save();
         console.log(userName+" was added succesfully");
     }
     catch(err){
         
         errOcurred(err,res,req);
     }
-    var items=[];
-        var payments=[]
-        var paymentsSum=0;
-        items.push(new itemSchema("Your income is:",
-        imcome,
-        "income"
-        ));
-        
-            paymentsSum+=mounthlySavings;
-            var temp=new itemSchema('mounthly savings',
-                "your paying for that :"+mounthlySavings+" a mounth",
-               "savings"
-            );
-            payments.push(temp);
-       
-       
-        items.push(new itemSchema("After regular payments",
-        usrFincaial.income-paymentsSum+" left",
-        "left"
-        ));
-        items=items.concat(payments);
+    var items=itemCreation(financial);
         res.render("./index.ejs",{name:userName,items:items,id:user._id});
 });
 app.post('/login',async(req,res)=>{
@@ -217,28 +229,7 @@ app.post('/login',async(req,res)=>{
     }
     else{
         var usrFincaial= await Financial.findOne({'user._id' : usr._id});
-        var items=[];
-        var payments=[]
-        var paymentsSum=0;
-        items.push(new itemSchema("Your income is:",
-        usrFincaial.income,
-        "income"
-        ));
-        var usrRegularregularPayments= usrFincaial.regularPayments;
-        usrRegularregularPayments.forEach((payment)=>{
-            paymentsSum+=payment.amount;
-            var temp=new itemSchema(payment.title,
-                "your paying for that :"+payment.amount+" a mounth",
-                payment.type.toString()
-            );
-            payments.push(temp);
-        });
-       
-        items.push(new itemSchema("After regular payments",
-        usrFincaial.income-paymentsSum+" left",
-        "left"
-        ));
-        items=items.concat(payments);
+        var items=itemCreation(usrFincaial);
         res.render("./index.ejs",{name:usr.username,items:items,id:usr._id});
     }
    
@@ -251,8 +242,46 @@ app.post('/regularpayment/:USERID',async(req,res)=>{
         type:req.body.type,
         amount:req.body.amount
     }));
-    usrFincaial.save();
+    try{
+        usrFincaial.save();
 
+    var items= itemCreation(usrFincaial);
+        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id});
+    }
+    catch(err){
+        errOcurred(err,res,req);
+    }
+    
+});
+app.post('/occasionalpayments/:USERID',async(req,res)=>{
+    var id=req.params.USERID;
+    var usrOccasional= await UserOccasional.findOne({'user._id' :id});
+    var usrFincaial= await Financial.findOne({'user._id' :id});
+    usrOccasional.occasionalPayments.push(new Occasional({
+        title:req.body.title,
+        amount:req.body.amount,
+        date:new Date(0)
+    }));
+    try{
+        usrOccasional.save();
+    var items=itemCreation(usrFincaial);
+    var occasionalItems=occasionalCreation(usrOccasional,items)
+        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id,S:occasionalItems});
+    }
+    catch(err){
+        errOcurred(err,res,req);
+    }
+    
+});
+function errOcurred(err,res,req)
+{
+    console.log(err);
+    var fullUrl = req.protocol + '://' + req.get('host');
+    res.render("./errorHandler.ejs",{currentUrl:fullUrl,err:err});
+}
+
+function itemCreation(usrFincaial){
+    
     var items=[];
         var payments=[]
         var paymentsSum=0;
@@ -275,11 +304,20 @@ app.post('/regularpayment/:USERID',async(req,res)=>{
         "left"
         ));
         items=items.concat(payments);
-        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id});
-});
-function errOcurred(err,res,req)
-{
-    console.log(err);
-    var fullUrl = req.protocol + '://' + req.get('host');
-    res.render("./errorHandler.ejs",{currentUrl:fullUrl,err:err});
+        return items;
+}
+function occasionalCreation(usrOccasional,paymentItems){
+    left=parseInt(paymentItems[2].content.replace(' left',''));
+    var items=[];
+        
+        var paymentsSum=0;
+        var usrOccasionalPayments= usrOccasional.occasionalPayments;
+        usrOccasionalPayments.forEach((payment)=>{
+            if(Math.abs(new Date() - payment.data)<2592000000)
+            paymentsSum+=payment.amount;
+            items.push(payment);
+        }
+        );
+
+        return items;
 }

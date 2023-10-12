@@ -7,9 +7,27 @@
         <%if(!locals.name){%>
           <%- include("./login.ejs") %>
         <%}else{%>
-          <p >hello <%=name%></p>
+          <p style="font-size: 1.2rem;">hello <%=name%></p>
           <main>
           <div id="itemContainer">
+            <p style="font-size: 1rem; text-align: start; margin: 10px;">occasional payments:</p>
+            <ul>
+              <%if(locals.occasionals){%>
+              <%}else{%>
+                <p>no items</p>
+              <%}%>
+              <li >
+                <p>add occasional payment:</p>
+                
+                <form style="display: flex; flex-direction: row;" action="<%="/occasionalpayments/"+locals.id%>" method="post">
+                  <label>title:</label>
+                  <input name="title" required/>
+                  <label>amount of money:</label>
+                  <input name="amount" type="number" required/>
+                  <button  type="submit">+</button>
+                </form>
+              </li>
+              </ul>
           <%if(locals.items){%>
             <%for (var i = 0; i < items.length; i++) {%>
               <div class="<%="item "+items[i].type%>" >
