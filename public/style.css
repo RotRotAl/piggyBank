@@ -169,7 +169,7 @@ div.item{
 *>*>form{
     margin:0px;
     padding:0px;
-    width: 20rem;
+    width: 15rem;
 }
 div.item.add-payment>form>*{
 
@@ -201,25 +201,34 @@ div.item.add-payment>form>input{
     width: 20rem;
 }
 ul{
+    position: relative;
+    left: 4rem;
+    max-width: 90vw;
     margin: 10px;
     padding: 0px;
 }
-ul>li{
-    display: flex;
-}
+
 ul>*{
+   
     border: 2px solid #929292;
     list-style-type: none;
     text-align: start;
     margin: 0px ;
 }
+ul>li>form{
+    max-width: 90vw;
+}
 li>form>input{
     width: 10rem;
  
 }
+ul>li{
+    max-width: 90vw;
+}
 li>form>*{
-    margin:5px 60px;
-    display: inline;
+    max-width: 10vw;
+    margin:5px 5vw;
+    display: inline-block;
 }
 #hello-user{
     font-size: 1.2rem;
