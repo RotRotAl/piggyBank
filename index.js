@@ -203,7 +203,8 @@ app.post("/signup",async(req,res)=>{
         errOcurred(err,res,req);
     }
     var items=itemCreation(financial);
-        res.render("./index.ejs",{name:userName,items:items,id:user._id});
+    var occasionalItems=occasionalCreation(userOccasional,items);
+        res.render("./index.ejs",{name:userName,items:items,id:user._id,occasional:occasionalItems});
 });
 app.post('/login',async(req,res)=>{
     var email=req.body.email;
@@ -228,15 +229,19 @@ app.post('/login',async(req,res)=>{
         errOcurred('there is a typo',res,req);
     }
     else{
+        var usrOccasional= await UserOccasional.findOne({'user._id' :usr._id});
         var usrFincaial= await Financial.findOne({'user._id' : usr._id});
         var items=itemCreation(usrFincaial);
-        res.render("./index.ejs",{name:usr.username,items:items,id:usr._id});
+        var occasionalItems=occasionalCreation(usrOccasional,items);
+        occasionalFeedItemCreation(items,occasionalItems);
+        res.render("./index.ejs",{name:usr.username,items:items,id:usr._id,occasional:occasionalItems});
     }
    
 });
 app.post('/regularpayment/:USERID',async(req,res)=>{
     var id=req.params.USERID;
     var usrFincaial= await Financial.findOne({'user._id' :id});
+    var usrOccasional= await UserOccasional.findOne({'user._id' :id});
     usrFincaial.regularPayments.push(new Payment({
         title:req.body.title,
         type:req.body.type,
@@ -246,7 +251,9 @@ app.post('/regularpayment/:USERID',async(req,res)=>{
         usrFincaial.save();
 
     var items= itemCreation(usrFincaial);
-        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id});
+    var occasionalItems=occasionalCreation(usrOccasional,items);
+    occasionalFeedItemCreation(items,occasionalItems);
+        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id,occasional:occasionalItems});
     }
     catch(err){
         errOcurred(err,res,req);
@@ -260,13 +267,15 @@ app.post('/occasionalpayments/:USERID',async(req,res)=>{
     usrOccasional.occasionalPayments.push(new Occasional({
         title:req.body.title,
         amount:req.body.amount,
-        date:new Date(0)
+        date:new Date()
     }));
     try{
         usrOccasional.save();
     var items=itemCreation(usrFincaial);
-    var occasionalItems=occasionalCreation(usrOccasional,items)
-        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id,S:occasionalItems});
+    var occasionalItems=occasionalCreation(usrOccasional,items);
+    occasionalFeedItemCreation(items,occasionalItems);
+
+        res.render("./index.ejs",{name:usrFincaial.user.username,items:items,id:id,occasional:occasionalItems});
     }
     catch(err){
         errOcurred(err,res,req);
@@ -306,8 +315,7 @@ function itemCreation(usrFincaial){
         items=items.concat(payments);
         return items;
 }
-function occasionalCreation(usrOccasional,paymentItems){
-    left=parseInt(paymentItems[2].content.replace(' left',''));
+function occasionalCreation(usrOccasional){
     var items=[];
         
         var paymentsSum=0;
@@ -320,4 +328,16 @@ function occasionalCreation(usrOccasional,paymentItems){
         );
 
         return items;
+}
+function occasionalFeedItemCreation(paymentItems,occasionalItems){
+    var left=parseInt(paymentItems[1].content.replace(' left',''));
+    var occasinalSum=0;
+    occasionalItems.forEach((item)=>{occasinalSum+=item.amount});
+    left-=occasinalSum;
+    paymentItems.push(
+        new itemSchema("After all payments",
+       left+" left",
+        "left"
+        )
+    );
 }

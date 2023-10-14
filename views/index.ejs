@@ -1,4 +1,6 @@
-
+<head>
+  <link rel="icon" href="/img/pig.ico" type="image/x-icon">
+</head>
 <body>
   <script>history.pushState({}, null, '/');</script>
   <%- include("./header.ejs") %>
@@ -7,12 +9,18 @@
         <%if(!locals.name){%>
           <%- include("./login.ejs") %>
         <%}else{%>
-          <p style="font-size: 1.2rem;">hello <%=name%></p>
+          <p id="hello-user">hello <%=name%></p>
           <main>
           <div id="itemContainer">
             <p style="font-size: 1rem; text-align: start; margin: 10px;">occasional payments:</p>
             <ul>
-              <%if(locals.occasionals){%>
+              <%if(locals.occasional){%>
+                <li><pre>name:     price:      date:</pre></li>
+                <% for(var i=0;i<occasional.length;i++){%>
+                  <li>
+                    <pre><%=occasional[i].title%>    <%=occasional[i].amount%>    <%=occasional[i].date%></pre>
+                  </li>
+                <%}%>
               <%}else{%>
                 <p>no items</p>
               <%}%>

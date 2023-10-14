@@ -17,6 +17,9 @@ body{
   
   
 }
+pre{
+    font-family: 'Bebas Neue', sans-serif;
+}
 main{
     display: flex;
   justify-content: center;
@@ -201,6 +204,9 @@ ul{
     margin: 10px;
     padding: 0px;
 }
+ul>li{
+    display: flex;
+}
 ul>*{
     border: 2px solid #929292;
     list-style-type: none;
@@ -214,4 +220,7 @@ li>form>input{
 li>form>*{
     margin:5px 60px;
     display: inline;
+}
+#hello-user{
+    font-size: 1.2rem;
 }
