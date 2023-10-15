@@ -1,3 +1,4 @@
+/* Base Styles */
 html{
     @if 1.3vw<1.2vh{
         font-size: 1.3vw;
@@ -17,9 +18,46 @@ body{
   
   
 }
+/* Paragraph Styles */
 pre{
     font-family: 'Bebas Neue', sans-serif;
 }
+#hello-user{
+    font-size: 1.2rem;
+}
+/*Item Style*/
+.item>h1{
+    background-color: #955ff88c;
+    font-size: 1.7rem;
+    margin: 25px;
+}
+.item.savings>h1{
+    background-color: #c5f85f88;
+}
+.item.income>h1{
+    background-color: #f8e15f81;
+}
+.item>p{
+    font-size: 1.5rem;
+}
+div.item{
+    display: inline-block;
+    text-transform: uppercase;
+    color: #555;
+    background-color: white;
+    border: 2px solid #929292;
+    border-radius:25%;
+    margin: 10px 10px;
+    padding: 10px;
+    height: 14rem;
+    width: 20rem;
+}
+#itemContainer>*>*>input{
+    font-size: 1rem;
+    width: 20rem;
+    padding: 0px;
+}
+/* Containers Styles */
 main{
     display: flex;
   justify-content: center;
@@ -51,6 +89,11 @@ header>h1{
     position: fixed;
     background-color: rgba(0, 0, 0, 0.5);
 }
+#itemContainer{
+    display: inline-block;
+    
+}
+/* Msg Content Styles */
 .backdrop>.content{
     text-transform: uppercase;
     color: #555;
@@ -77,31 +120,6 @@ header>h1{
     
     background-color: white;
     display: block;
-}
-form{
-    max-width: 420px;
-    margin: 10px ;
-    text-align: left;
-    padding: 40px;
-    border-radius: 10px;
-}
-label{
-    color: #aaa;
-    display: inline-block;
-    margin: 5px 0 15px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-input{
-    display: block;
-    padding: 10px 6px;
-    width: 30rem;
-    box-sizing: border-box;
-    border: none;
-    border-bottom:1px solid #ddd ;
-    color: #555;
 }
 a { 
     color: inherit;
@@ -131,40 +149,31 @@ a {
     margin-top: 30px;
     width: 40rem;
 }
-.item>h1{
-    background-color: #955ff88c;
-    font-size: 1.7rem;
-    margin: 25px;
+/* Forms Styles */
+form{
+    max-width: 420px;
+    margin: 10px ;
+    text-align: left;
+    padding: 40px;
+    border-radius: 10px;
 }
-.item.savings>h1{
-    background-color: #c5f85f88;
-}
-.item.income>h1{
-    background-color: #f8e15f81;
-}
-.item>p{
-    font-size: 1.5rem;
-}
-div.item{
+label{
+    color: #aaa;
     display: inline-block;
+    margin: 5px 0 15px;
+    font-size: 0.9em;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+input{
+    display: block;
+    padding: 10px 6px;
+    width: 30rem;
+    box-sizing: border-box;
+    border: none;
+    border-bottom:1px solid #ddd ;
     color: #555;
-    background-color: white;
-    border: 2px solid #929292;
-    border-radius:25%;
-    margin: 10px 10px;
-    padding: 10px;
-    height: 14rem;
-    width: 20rem;
-}
-#itemContainer{
-    display: inline-block;
-    
-}
-#itemContainer>*>*>input{
-    font-size: 1rem;
-    width: 20rem;
-    padding: 0px;
 }
 *>*>form{
     margin:0px;
@@ -200,6 +209,7 @@ div.item.add-payment>form>button{
 div.item.add-payment>form>input{
     width: 20rem;
 }
+/* List Styles */
 ul{
     position: relative;
     left: 4rem;
@@ -229,7 +239,4 @@ li>form>*{
     max-width: 10vw;
     margin:5px 5vw;
     display: inline-block;
-}
-#hello-user{
-    font-size: 1.2rem;
 }
