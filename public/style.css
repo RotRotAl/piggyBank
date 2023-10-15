@@ -34,6 +34,18 @@ pre{
 .item.savings>h1{
     background-color: #c5f85f88;
 }
+.item.left>h1{
+    background-color: #f8b65f88;
+}
+.item.transpotation>h1{
+    background-color: #9cf85f88;
+}
+.item.subscriptons>h1{
+    background-color: #ff7e7e88;
+}
+.item.contribution>h1{
+    background-color: #ff9eef88;
+}
 .item.income>h1{
     background-color: #f8e15f81;
 }
